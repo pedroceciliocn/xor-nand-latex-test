@@ -1,0 +1,210 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{booktabs} % for "\midrule" macro
+%\usepackage{lipsum} % for filler text
+%\usepackage{caption}
+%\newcommand{\xor}{\oplus}
+\newcommand{\xor}{%
+  \mathbin{%
+    {\vee}\mspace{-2.9mu}\nonscript\mspace{0.3mu}{\vee}%
+  }%
+}
+\makeatletter
+\DeclareRobustCommand{\nand}{\mathbin{\mathpalette\n@and@or\land}}
+\DeclareRobustCommand{\nor}{\mathbin{\mathpalette\n@and@or\lor}}
+
+\newcommand{\n@and@or}[2]{%
+  \vphantom{#2}%
+  \ooalign{$\m@th#1#2$\cr\hidewidth$\m@th#1\sim$\hidewidth\cr}%
+}
+\makeatother
+
+
+
+\begin{document}
+\title{Demonstração XOR usando apenas NANDs}
+\author{Autor e vai e vai e vai}
+\maketitle
+\section{Tabela verdade de uma NAND}
+A NAND B pode ser escrito como $\lnot(A\land B)$. Abaixo sua tabela verdade:
+\begin{center}
+    Tabela Verdade $\lnot (A\land B)$
+\end{center}
+%\bigskip % some extra vertical space *above* the first "center" env.
+\begin{center}
+\begin{tabular}{cccc}
+$A$ & $B$ & $A\land B$ & $\lnot (A\land B)$\\
+\midrule
+V & V & V & F\\
+V & F & F & V\\
+F & V & F & V\\
+F & F & F & V\\
+\end{tabular}
+\end{center}
+Como verificado acima, uma NAND funciona como uma AND (um ``e'') mas com sua saída (resultado) negado. Agora seguiremos para uma tabela verdade de uma XOR (ou exclusivo).
+\section{Tabela verdade de uma XOR}
+Podemos escrever A XOR B como $A\oplus B$ ou como $(\lnot A\land B)\lor (A\land \lnot B)$. Verificamos a tabela abaixo:
+\begin{center}
+   Tabela Verdade $A \oplus B$ 
+\end{center}
+%\bigskip % some extra vertical space *above* the first "center" env.
+\begin{center}
+\begin{tabular}{ccccccc}
+$A$ & $\lnot A$ & $B$ & $\lnot B$ & $\lnot A\land B$ & $A\land  \lnot B$ & $\smash{\overbrace{(\lnot A\land B)\lor (A\land \lnot B)}^{\textbf{($A \oplus B$)}}}$\\
+\midrule
+V & F & V & F & F & F & F\\
+V & F & F & V & F & V & V\\
+F & V & V & F & V & F & V\\
+F & V & F & V & F & F & F\\
+\end{tabular}
+\end{center}
+\subsection{O problema}
+Para demonstrar que é possível construir uma proposição lógica equivalente a um ``ou exclusivo'' (XOR), mas usando somente ``nãos'' (NOTs) e ``es'' (ANDs), ou seja NANDs, precisaríamos transformar a proposição inicial, removendo o ``ou'' (OR) com algum artifício lógico disponível.
+\subsubsection{De Morgan e dupla negação}
+A primeira forma de remover o ``ou'' (OR) seria usando ``De Morgan'', que descreve que:
+\begin{center}
+$\lnot (A\land B) \equiv \lnot A \lor \lnot B$   
+\end{center}
+e também que:
+\begin{center}
+$\lnot (A \lor B)  \equiv \lnot A \land \lnot B$   
+\end{center}
+Mas como fica visível, precisaríamos que as partes da proposição estivessem ambas negadas ou que a própria proposição inteira estivesse negada.
+Podemos então desenvolver $(\lnot A\land B)\lor (A \land \lnot B)$ usando uma dupla negação:
+\begin{center}
+    $(\lnot A\land B)\lor (A\land \lnot B) = \lnot\lnot ((\lnot A\land B)\lor (A\land \lnot B))$
+\end{center}
+Agora, a partir de \emph{De Morgan}, temos que:
+\begin{center}
+  $\lnot(\lnot((\lnot A\land B)\lor (A\land \lnot B))) = \lnot(\lnot(\lnot A\land B)\land \lnot(A\land \lnot B))$  
+\end{center}
+\subsubsection{O problema de ¬A e ¬B}
+Da forma atual, a expressão tem ``nãos isolados'', nos casos de \textbf{A} e \textbf{B}, e então precisamos desenvolver $\lnot A$ e $\lnot B$. Logo, como verificado na tabela:
+\begin{center}
+\begin{tabular}{cccccccc}
+$A$ & $\lnot A$ & $A\land A$ & $\lnot (A\land A)$ & $B$ & $\lnot B$ & $B\land B$ & $\lnot (B\land B)$\\
+\midrule
+V & F & V & F & V & F & V & F\\
+V & F & V & F & F & V & F & V\\
+F & V & F & V & V & F & V & F\\
+F & V & F & V & F & V & F & V
+\end{tabular}
+\end{center}
+
+Sabemos que:
+
+\begin{center}
+    $\lnot A = \lnot (A\land A)$ e $\lnot B = \lnot (B\land B)$,
+\end{center}
+ 
+%\bigskip  % some extra vertical space *below* the second "center" env.
+
+Agora temos que:
+
+\begin{center}
+    $\lnot(\lnot(\lnot A\land B) \land \lnot(A\land \lnot B)) = \lnot(\lnot(\lnot(A\land A)\land B)\land \lnot(A\land \lnot(B\land B)))$
+\end{center}
+\subsection{Desenvolvimento da tabela verdade}
+Agora complementando a tabela, e usando os resultados da tabela anterior, temos:
+
+\begin{center}
+   Tabela Verdade Final - Parte 1 
+\end{center}
+
+\begin{center}
+\begin{tabular}{cccc}
+$\lnot (A\land A)\land B$ & $\lnot(\lnot(A\land A)\land B)$ & $A\land \lnot(B\land B)$ & $\lnot(A\land \lnot(B\land B))$\\
+\midrule
+F & V & F & V\\
+F & V & V & F\\
+V & F & F & V\\
+F & V & F & V 
+\end{tabular}
+\end{center}
+\bigskip
+
+E em seguida construindo a tabela para a conjunção dos termos negados da tabela anterior:
+\begin{center}
+   Tabela Verdade Final - Parte 2 
+\end{center}
+
+\begin{center}
+\begin{tabular}{ccc}
+$\lnot(\lnot(A\land A)\land B)$ & $\lnot(A\land \lnot(B\land B))$ & $\lnot(\lnot(A\land A)\land B)\land \lnot(A\land \lnot(B\land B))$\\
+\midrule
+V & V & V\\
+V & F & F\\
+F & V & F\\
+V & V & V
+\end{tabular}
+\end{center}
+\bigskip
+
+E agora a negação da conjunção:
+\begin{center}
+   Tabela Verdade Final - Parte 3 
+\end{center}
+\begin{center}
+\begin{tabular}{cc}
+$\lnot(\lnot(A\land A)\land B)\land \lnot(A\land \lnot(B\land B))$ & $\lnot(\lnot(\lnot(A\land A)\land B)\land \lnot(A\land \lnot(B\land B)))$\\
+\midrule
+V & F\\
+F & V\\
+F & V\\
+V & F\\
+\end{tabular}
+\end{center}
+\bigskip
+
+E finalmente, comparando com os resultados da tabela inicial:
+\bigskip
+\bigskip
+
+%\begin{center}
+%   Tabela Verdade Final
+%\end{center}
+
+\begin{center}
+\begin{tabular}{cc}
+$\lnot(\lnot(\lnot(A\land A)\land B)\land \lnot(A\land \lnot(B\land B)))$ & $\smash{\overbrace{(\lnot A\land B)\lor (A\land \lnot B)}^{\textbf{($A \oplus B$)}}}$\\
+\midrule
+F & F\\
+V & V\\
+V & V\\
+F & F\\
+\end{tabular}
+\end{center}
+\bigskip
+\section{Conclusão}
+Verificando que as duas tabelas têm as mesmas saídas (continuam a ter, na verdade), podemos concluir então, que é possível descrever $A\oplus B$ (A XOR B) usando apenas NANDs.
+
+Escrevendo como no início do problema, em que A NAND B = $\lnot(A\land B)$, teríamos que:
+
+\begin{center}
+ $A \oplus B = \lnot(\lnot(\lnot(A\land A)\land B \land(\lnot(A\land(\lnot(B\land B))))))$   
+\end{center}
+
+pode ser escrito também como:
+\begin{center}
+    A XOR B = ((A NAND A)NAND B) NAND (A NAND(B NAND B))
+\end{center}
+
+
+
+ou com outra notação:
+
+\begin{center}
+    $A \xor B = ((A\nand A)\nand B)\nand(A\nand(B\nand B))$
+\end{center}   
+\bigskip
+
+
+ou com mais uma outra notação:
+
+
+\begin{center}
+  $A \oplus B = \overline{\overline{(\overline{(AA)}.B)}.\overline{(A.\overline{(BB)})}}$  
+\end{center}
+
+
+\end{document}
